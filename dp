@@ -1,0 +1,55 @@
+import numpy as np 
+import matplotlib.pyplot as plt 
+# Step 1: Generate Synthetic Dataset 
+np.random.seed(42)  # For reproducibility 
+X = 2 * np.random.rand(100, 1)  # Feature values (100 samples) 
+y = 4 + 3 * X + np.random.randn(100, 1)  # Target values: linear + noise 
+# Visualize the dataset 
+plt.scatter(X, y, color='blue', label='Data points') 
+plt.xlabel('X') 
+plt.ylabel('y') 
+plt.title('Dataset') 
+plt.legend() 
+plt.show() 
+# Step 2: Add Bias Term (for Intercept θ₀) 
+X_b = np.c_[np.ones((100, 1)), X]  # Add column of 1s to X 
+# Step 3: Normal Equation (Closed-Form Solution) 
+# θ = (XᵀX)⁻¹ Xᵀy 
+theta_best = np.linalg.inv(X_b.T @ X_b) @ X_b.T @ y 
+print("Optimal parameters using Normal Equation:") 
+print(f"θ₀ (Intercept): {theta_best[0][0]}") 
+print(f"θ₁ (Slope): {theta_best[1][0]}") 
+# Step 4: Prediction using the Model 
+X_new = np.array([[0], [2]])  # Predict for X=0 and X=2 
+X_new_b = np.c_[np.ones((2, 1)), X_new]  # Add bias term 
+y_pred = X_new_b @ theta_best  # Predictions 
+# Plot the regression line 
+plt.scatter(X, y, color='blue', label='Data points') 
+plt.plot(X_new, y_pred, color='red', label='Regression line') 
+plt.xlabel('X') 
+plt.ylabel('y') 
+plt.title('Linear Regression Fit') 
+plt.legend() 
+plt.show() 
+# Step 5: Gradient Descent Implementation 
+# Initialize parameters 
+learning_rate = 0.1 
+n_iterations = 1000 
+m = len(X_b) 
+theta = np.random.randn(2, 1)  # Random initialization of θ 
+# Gradient Descent Loop 
+for iteration in range(n_iterations): 
+gradients = (2 / m) * X_b.T @ (X_b @ theta - y) 
+theta -= learning_rate * gradients 
+print("Optimal parameters using Gradient Descent:") 
+print(f"θ₀ (Intercept): {theta[0][0]}") 
+print(f"θ₁ (Slope): {theta[1][0]}") 
+# Plot the regression line obtained by Gradient Descent 
+y_pred_gd = X_new_b @ theta 
+plt.scatter(X, y, color='blue', label='Data points') 
+plt.plot(X_new, y_pred_gd, color='green', label='Gradient Descent line') 
+plt.xlabel('X') 
+plt.ylabel('y') 
+plt.title('Linear Regression Fit (Gradient Descent)') 
+plt.legend() 
+plt.show()
